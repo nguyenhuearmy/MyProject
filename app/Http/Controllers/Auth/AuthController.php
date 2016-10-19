@@ -46,17 +46,19 @@ class AuthController extends Controller
     public function authenticate(Request $request)
     {
         $this->validate($request, [
-            'username' => 'required', 'password' => 'required',
+            'auth' => 'required', 'password' => 'required',
         ]);
     
-        $credentials = $request->only('username', 'password');
+        $field = filter_var($request->input('auth'), FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        $credentials[$field] = $request->input('auth');
+        $credentials['password'] = $request->input('password');
     
         if (\Auth::attempt($credentials, $request->has('remember'))){
             return redirect()->intended($this->redirectPath());
         }
     
-        return redirect($this->loginPath())->withInput($request->only('username', 'remember'))->withErrors([
-            'username' => $this->getFailedLoginMessage(),
+        return redirect($this->loginPath())->withInput($request->only('auth', 'remember'))->withErrors([
+            'auth' => $this->getFailedLoginMessage(),
         ]);
     }
 
