@@ -20,3 +20,7 @@ Route::auth();
 Route::get('/home', 'HomeController@index');
 
 Route::post('/login', 'Auth\AuthController@authenticate');
+
+Route::get('/email', 'HomeController@email');
+
+Route::post('/email', 'HomeController@addemail');
